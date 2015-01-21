@@ -25,6 +25,8 @@ namespace Platformer
       var startN = GetBlockNumber((int)actor.Position.X);
       var lastN = GetBlockNumber((int)actor.Position.X + actor.GetBoundingBox().Width);
 
+      Debug.Assert(startN >= 0 && lastN < blocksNumber && startN <= lastN, "ActorMap.AddActor() : ");
+
       for (var n = startN; n <= Math.Min(lastN, blocksNumber - 1); ++n)
       {
         if (blocks[n] == null)
@@ -43,10 +45,12 @@ namespace Platformer
 
     public List<Actor> FetchActors(Rectangle rect)
     {
-      var result = new List<Actor>();
-
       var startN = GetBlockNumber(rect.X);
       var lastN = GetBlockNumber(rect.X + rect.Width);
+
+      Debug.Assert(startN >= 0 && lastN < blocksNumber && startN <= lastN, "ActorMap.FetchActors() : ");
+
+      var result = new List<Actor>();
 
       for (var n = startN; n <= Math.Min(lastN, blocksNumber - 1); ++n)
       {

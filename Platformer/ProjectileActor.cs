@@ -22,14 +22,14 @@ namespace Platformer
       base.Update();
     }
 
-    public override void OnCollide(Actor actor)
+    public override void OnBoundingBoxTrigger(Actor other)
     {
-      if (actor is PlatformActor)
+      if (other is PlatformActor)
       {
         sandbox.RemoveActor(this);
       }
 
-      base.OnCollide(actor);
+      base.OnBoundingBoxTrigger(other);
     }
   }
 }

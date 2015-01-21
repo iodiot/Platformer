@@ -60,10 +60,10 @@ namespace Platformer
       }
     }
 
-    public override void OnCollide(Actor actor)
+    public override void OnBoundingBoxTrigger(Actor actor)
     {
 
-      base.OnCollide(actor);
+      base.OnBoundingBoxTrigger(actor);
     }
 
     public override bool IsPassableFor(Actor actor)
@@ -71,14 +71,14 @@ namespace Platformer
       return !actor.IsStatic;
     }
 
-    public override void OnCollider(Actor other, int otherCollider, int thisCollider)
+    public override void OnColliderTrigger(Actor other, int otherCollider, int thisCollider)
     {
       if (other is EnemyActor)
       {
-        Console.WriteLine(String.Format("{0} : SHIT", Ticks));
+        Console.WriteLine(String.Format("{0} : hurt", Ticks));
       }
 
-      base.OnCollider(other, otherCollider, thisCollider);
+      base.OnColliderTrigger(other, otherCollider, thisCollider);
     }
   }
 }

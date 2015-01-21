@@ -90,6 +90,7 @@
     <Compile Include="ProjectileActor.cs" />
     <Compile Include="ActorMap.cs" />
     <Compile Include="MovingPlatformActor.cs" />
+    <Compile Include="Debug.cs" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Assets\logo.png" />

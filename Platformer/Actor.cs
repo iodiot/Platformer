@@ -37,15 +37,11 @@ namespace Platformer
       ++Ticks;
     }
 
-    public virtual void OnCollide(Actor actor)
-    {
-    }
-
     public Rectangle GetBoundingBox()
     {
       return new Rectangle(
-        (int)Position.X + boundingBox.X,
-        (int)Position.Y + boundingBox.Y,
+        (int)(Position.X + boundingBox.X),
+        (int)(Position.Y + boundingBox.Y),
         boundingBox.Width,
         boundingBox.Height
       );
@@ -69,7 +65,7 @@ namespace Platformer
       {
           Name = colliders[n].Name,
           Color = colliders[n].Color,
-          BoundingBox = new Rectangle((int)Position.X + box.X, (int)Position.Y + box.Y, box.Width, box.Height)
+          BoundingBox = new Rectangle((int)(Position.X + box.X), (int)(Position.Y + box.Y), box.Width, box.Height)
       };
 
       return collider;
@@ -80,9 +76,13 @@ namespace Platformer
       return false;
     }
 
-    public virtual void OnCollider(Actor other, int otherCollider, int thisCollider)
+    public virtual void OnColliderTrigger(Actor other, int otherCollider, int thisCollider)
     {
 
+    }
+
+    public virtual void OnBoundingBoxTrigger(Actor other)
+    {
     }
   }
 }

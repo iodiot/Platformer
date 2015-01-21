@@ -33,7 +33,7 @@ namespace Platformer
       return !actor.IsStatic;
     }
 
-    public override void OnCollider(Actor other, int otherCollider, int thisCollider)
+    public override void OnColliderTrigger(Actor other, int otherCollider, int thisCollider)
     {
       if (other is ProjectileActor)
       {
@@ -41,7 +41,7 @@ namespace Platformer
         sandbox.RemoveActor(other);
       }
 
-      base.OnCollider(other, otherCollider, thisCollider);
+      base.OnColliderTrigger(other, otherCollider, thisCollider);
     }
   }
 }

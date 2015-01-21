@@ -8,32 +8,24 @@ namespace Platformer
 {
   public class Sandbox
   {
-    private readonly GraphicsDeviceManager graphics;
     private readonly SpriteBatch spriteBatch;
 
-    private readonly int screenWidth;
-    private readonly int screenHeight;
 
     private Texture2D oneWhitePixel;
 
     private readonly List<Actor> actors, actorsToAdd, actorsToRemove;
 
     private PlayerActor player;
-    private int counter, maxCounter;
 
     private ActorMap actorMap;
 
     public Sandbox(GraphicsDeviceManager graphics, SpriteBatch spriteBatch)
     {
-      this.graphics = graphics;
       this.spriteBatch = spriteBatch;
 
       actors = new List<Actor>();
       actorsToAdd = new List<Actor>();
       actorsToRemove = new List<Actor>();
-
-      screenWidth = graphics.GraphicsDevice.Viewport.Width;
-      screenHeight = graphics.GraphicsDevice.Viewport.Height;
 
       AddActors();
     }
@@ -86,8 +78,6 @@ namespace Platformer
 
     public void Update()
     {
-      counter = 0;
-
       // generate actors map
       actorMap = new ActorMap(0, 2000, 100);
       foreach (var a in actors)
@@ -112,14 +102,6 @@ namespace Platformer
       // add actors
       actors.AddRange(actorsToAdd);
       actorsToAdd.Clear();
-
-      //Console.WriteLine(counter);
-      //if (maxCounter < counter)
-      //{
-      //  maxCounter = counter;
-      //  Console.WriteLine(counter);
-      //}
-      counter = 0;
     }
       
     public void Draw()
@@ -175,9 +157,18 @@ namespace Platformer
         }
       }
 
+
       foreach (var a in actors)
       {
-        if (!a.IsStatic && !(a is MovingPlatformActor))
+        if (!a.IsStatic)
+        {
+          ResolveBoundingBoxes(a);
+        }
+      }
+
+      foreach (var a in actors)
+      {
+        if (!a.IsStatic)
         {
           LimitVelocity(a);
         }
@@ -202,6 +193,20 @@ namespace Platformer
       }
     }
 
+    private void ResolveBoundingBoxes(Actor actor)
+    {
+      var obstacles = actorMap.FetchActors(actor.GetBoundingBox());
+
+      foreach (var obstacle in obstacles)
+      {
+        if (actor.GetBoundingBox().Intersects(obstacle.GetBoundingBox()))
+        {
+          actor.OnBoundingBoxTrigger(obstacle);
+          obstacle.OnBoundingBoxTrigger(actor);
+        }
+      }
+    }
+
     private void ResolveColliders(Actor actor)
     {
       for (var i = 0; i < actor.GetCollidersCount(); ++i)
@@ -221,7 +226,7 @@ namespace Platformer
 
             if (collider.BoundingBox.Intersects(otherCollider.BoundingBox))
             {
-              actor.OnCollider(other, j, i);
+              actor.OnColliderTrigger(other, j, i);
             }
           }
         }
@@ -368,8 +373,6 @@ namespace Platformer
           result.Add(other); 
           other.TintTtl = 5;
         }
-
-       // ++counter;
       }
 
       return result;
