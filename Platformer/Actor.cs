@@ -37,7 +37,7 @@ namespace Platformer
       ++Ticks;
     }
 
-    public Rectangle GetBoundingBox()
+    public Rectangle GetWorldBoundingBox()
     {
       return new Rectangle(
         (int)(Position.X + boundingBox.X),
@@ -47,7 +47,7 @@ namespace Platformer
       );
     }
 
-    public Rectangle GetRelativeBoundingBox()
+    public Rectangle GetBoundingBox()
     {
       return boundingBox;
     }
@@ -57,7 +57,7 @@ namespace Platformer
       return colliders.Count;
     }
 
-    public Collider GetCollider(int n)
+    public Collider GetWorldCollider(int n)
     {
       var box = colliders[n].BoundingBox;
 
@@ -71,6 +71,11 @@ namespace Platformer
       return collider;
     }
 
+    public Collider GetCollider(int n)
+    {
+      return colliders[n];
+    }
+
     public virtual bool IsPassableFor(Actor actor)
     {
       return false;
@@ -78,7 +83,6 @@ namespace Platformer
 
     public virtual void OnColliderTrigger(Actor other, int otherCollider, int thisCollider)
     {
-
     }
 
     public virtual void OnBoundingBoxTrigger(Actor other)

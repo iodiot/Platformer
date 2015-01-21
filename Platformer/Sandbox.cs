@@ -10,7 +10,6 @@ namespace Platformer
   {
     private readonly SpriteBatch spriteBatch;
 
-
     private Texture2D oneWhitePixel;
 
     private readonly List<Actor> actors, actorsToAdd, actorsToRemove;
@@ -109,7 +108,7 @@ namespace Platformer
       foreach (var a in actors)
       {
         // draw bounding box
-        var box = a.GetBoundingBox();
+        var box = a.GetWorldBoundingBox();
         box.X -= (int)player.Position.X - 200;
         box.Y -= (int)(player.Position.Y * 0.25f) - 50;
         DrawRectangle(box, a.BoundingColor * (a.TintTtl > 0 ? 0.5f : 1.0f));
@@ -117,7 +116,7 @@ namespace Platformer
         // draw colliders
         for (var i = 0; i < a.GetCollidersCount(); ++i)
         {
-          var collider = a.GetCollider(i);
+          var collider = a.GetWorldCollider(i);
           collider.BoundingBox.X -= (int)player.Position.X - 200;
           collider.BoundingBox.Y -= (int)(player.Position.Y * 0.25f) - 50;
           DrawRectangle(collider.BoundingBox, Color.White * ((a.Ticks / 25) % 2 == 0 ? 0.5f : 0.25f));
@@ -195,11 +194,11 @@ namespace Platformer
 
     private void ResolveBoundingBoxes(Actor actor)
     {
-      var obstacles = actorMap.FetchActors(actor.GetBoundingBox());
+      var obstacles = actorMap.FetchActors(actor.GetWorldBoundingBox());
 
       foreach (var obstacle in obstacles)
       {
-        if (actor.GetBoundingBox().Intersects(obstacle.GetBoundingBox()))
+        if (actor.GetWorldBoundingBox().Intersects(obstacle.GetWorldBoundingBox()))
         {
           actor.OnBoundingBoxTrigger(obstacle);
           obstacle.OnBoundingBoxTrigger(actor);
@@ -211,7 +210,7 @@ namespace Platformer
     {
       for (var i = 0; i < actor.GetCollidersCount(); ++i)
       {
-        var collider = actor.GetCollider(i);
+        var collider = actor.GetWorldCollider(i);
 
         foreach (var other in actors)
         {
@@ -222,7 +221,7 @@ namespace Platformer
 
           for (var j = 0; j < other.GetCollidersCount(); ++j)
           {
-            var otherCollider = other.GetCollider(j);
+            var otherCollider = other.GetWorldCollider(j);
 
             if (collider.BoundingBox.Intersects(otherCollider.BoundingBox))
             {
@@ -250,10 +249,10 @@ namespace Platformer
         if (obstaclesY.Count > 0)
         {
           var minY = (int)Math.Abs(actor.Velocity.Y);
-          var box = actor.GetBoundingBox();
+          var box = actor.GetWorldBoundingBox();
           foreach (var o in obstaclesY)
           {
-            var otherBox = o.GetBoundingBox();
+            var otherBox = o.GetWorldBoundingBox();
 
             var topBox = box.Y < otherBox.Y ? box : otherBox;
             var bottomBox = box.Y < otherBox.Y ? otherBox : box;
@@ -276,10 +275,10 @@ namespace Platformer
         if (obstaclesX.Count > 0)
         {
           var minX = (int)Math.Abs(actor.Velocity.X);
-          var box = actor.GetBoundingBox();
+          var box = actor.GetWorldBoundingBox();
           foreach (var o in obstaclesX)
           {
-            var otherBox = o.GetBoundingBox();
+            var otherBox = o.GetWorldBoundingBox();
 
             var leftBox = box.X < otherBox.X ? box : otherBox;
             var rightBox = box.X < otherBox.X ? otherBox : box;
@@ -323,38 +322,11 @@ namespace Platformer
       }
     }
 
-    public List<Actor> GetObstacles(Actor actor, int dx, int dy)
-    {       
-      var result = new List<Actor>();
-
-      var box = actor.GetBoundingBox();
-
-      box.X = (int)box.X + dx;
-      box.Y = (int)box.Y + dy;
-
-      foreach (var other in actors)
-      {
-        if (actor == other || other.IsPassableFor(actor))
-        {
-          continue;
-        }
-
-        if (box.Intersects(other.GetBoundingBox()))
-        {
-          result.Add(other); 
-          other.TintTtl = 5;
-        }
-
-      }
-
-      return result;
-    }
-
     public List<Actor> GetObstacles(Actor actor, float dx, float dy)
     {
       var result = new List<Actor>();
 
-      var box = actor.GetRelativeBoundingBox();
+      var box = actor.GetBoundingBox();
 
       box.X = (int)(box.X + dx + actor.Position.X);
       box.Y = (int)(box.Y + dy + actor.Position.Y);
@@ -368,7 +340,7 @@ namespace Platformer
           continue;
         }
 
-        if (box.Intersects(other.GetBoundingBox()))
+        if (box.Intersects(other.GetWorldBoundingBox()))
         {
           result.Add(other); 
           other.TintTtl = 5;
