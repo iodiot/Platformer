@@ -75,7 +75,7 @@ namespace Platformer
     {
       if (other is EnemyActor)
       {
-        Console.WriteLine(String.Format("{0} : hurt", Ticks));
+        //Console.WriteLine(String.Format("{0} : hurt", Ticks));
       }
 
       base.OnColliderTrigger(other, otherCollider, thisCollider);

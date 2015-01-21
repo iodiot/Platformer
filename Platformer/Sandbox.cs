@@ -18,6 +18,8 @@ namespace Platformer
 
     private ActorMap actorMap;
 
+    private int counter;
+
     public Sandbox(GraphicsDeviceManager graphics, SpriteBatch spriteBatch)
     {
       this.spriteBatch = spriteBatch;
@@ -101,6 +103,9 @@ namespace Platformer
       // add actors
       actors.AddRange(actorsToAdd);
       actorsToAdd.Clear();
+
+      Console.WriteLine(counter);
+      counter = 0;
     }
       
     public void Draw()
@@ -212,7 +217,9 @@ namespace Platformer
       {
         var collider = actor.GetWorldCollider(i);
 
-        foreach (var other in actors)
+        var actorsInRadius = actorMap.FetchActors(collider.BoundingBox);
+
+        foreach (var other in actorsInRadius)
         {
           if (actor == other)
           {
@@ -228,6 +235,8 @@ namespace Platformer
               actor.OnColliderTrigger(other, j, i);
             }
           }
+
+          ++counter;
         }
       }
     }
