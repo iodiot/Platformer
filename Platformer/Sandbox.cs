@@ -358,6 +358,11 @@ namespace Platformer
 
       return result;
     }
+
+    public float GetGroundLevelFor(Actor actor)
+    {
+      return 0;
+    }
   }
 }
 
